@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+</head>
+<body>
+<form action="/user/login" method="post">
+    <p th:text="${message}" th:if="${not #strings.isEmpty(message)}"></p>
+    <input th:placeholder="#{login.userName}" name="userName" type="text">
+    <input th:placeholder="#{login.password}" name="password" type="text">
+    <button th:text="#{login.tip}" type="submit">login page</button>
+</form>
+<div>
+    <a th:href="@{index.html(l='zh_CN')}">中文</a>
+    <a th:href="@{index.html(l='en_US')}">english</a>
+</div>
+</body>
+</html>
