@@ -3,11 +3,11 @@ package springbootcrud.bean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value = "用户实体类")
+@ApiModel(value = "userModel")
 public class User {
-    @ApiModelProperty(value = "用户年龄")
+    @ApiModelProperty(name = "age", value = "用户年龄", required = true)
     private Integer age;
-    @ApiModelProperty(value = "用户姓名")
+    @ApiModelProperty(name = "name", value = "用户姓名", required = true)
     private String name;
 
     public Integer getAge() {

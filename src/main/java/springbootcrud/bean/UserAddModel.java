@@ -1,7 +1,6 @@
 package springbootcrud.bean;
 
 import io.swagger.annotations.ApiModelProperty;
-
 public class UserAddModel extends User {
     @ApiModelProperty(value = "用户id")
     private Integer id;
