@@ -1,19 +1,14 @@
 package springbootcrud.bean;
 
-import org.springframework.stereotype.Component;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel(value = "用户实体类")
 public class User {
-    private Integer id;
+    @ApiModelProperty(value = "用户年龄")
     private Integer age;
+    @ApiModelProperty(value = "用户姓名")
     private String name;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getAge() {
         return age;
@@ -30,4 +25,5 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
 }
