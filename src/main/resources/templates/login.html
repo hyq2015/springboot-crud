@@ -5,7 +5,7 @@
     <title>index</title>
 </head>
 <body>
-<form action="/user/login" method="post">
+<form action="/user/login" method="get">
     <p th:text="${message}" th:if="${not #strings.isEmpty(message)}"></p>
     <input th:placeholder="#{login.userName}" name="userName" type="text">
     <input th:placeholder="#{login.password}" name="password" type="text">

@@ -22,23 +22,24 @@ public class LoginController {
             @ApiImplicitParam(name = "password", value = "密码", dataType = "string")
     })
     @GetMapping(value = "/user/login")
-    @ResponseBody
-    public String Login(@RequestParam("userName") String userName, @RequestParam("password") String password) {
+    public String Login(@RequestParam("userName") String userName, @RequestParam("password") String password, Map<String, Object> map,
+                        HttpSession session) {
         if (!StringUtils.isEmpty(userName) && "123456".equals(password)) {
-//            return "redirect:/main.html";
-            return "ok";
+            System.out.println("登录之后重定向==============");
+            session.setAttribute("loginUser", userName);
+            return "redirect:/main.html";
         } else {
+            map.put("message", "用户名或密码错误");
             return "login";
         }
     }
-//    public String Login(@RequestParam("userName") String userName, @RequestParam("password") String password, Map<String, Object> map,
-//                        HttpSession session) {
+//    public String Login(@RequestParam("userName") String userName, @RequestParam("password") String password) {
 //        if (!StringUtils.isEmpty(userName) && "123456".equals(password)) {
-//            session.setAttribute("loginUser", userName);
-//            return "redirect:/main.html";
+////            return "redirect:/main.html";
+//            return "ok";
 //        } else {
-//            map.put("message", "用户名或密码错误");
 //            return "login";
 //        }
 //    }
+
 }

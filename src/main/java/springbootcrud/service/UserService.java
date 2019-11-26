@@ -2,6 +2,7 @@ package springbootcrud.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import springbootcrud.bean.User;
 import springbootcrud.bean.UserAddModel;
@@ -23,7 +24,14 @@ public class UserService {
         return userMapper.getAllUser();
     }
 
+    @Async
     public void addUser(UserAddModel user) {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         userMapper.addUser(user);
     }
 }
