@@ -11,6 +11,8 @@ import java.util.Date;
 @ConfigurationProperties(prefix = "config.jwt")
 @Component
 public class JwtConfig {
+//    public static final String TOKEN_HEADER = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
     /*
      * 根据身份ID标识，生成Token
      */

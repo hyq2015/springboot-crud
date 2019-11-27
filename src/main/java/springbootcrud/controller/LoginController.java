@@ -16,6 +16,7 @@ import springbootcrud.dto.UserRegister;
 import springbootcrud.service.LoginService;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -49,29 +50,18 @@ public class LoginController {
         } else {
             return ResultUtil.error(1, "user not found");
         }
-
-//        if (!StringUtils.isEmpty(userName) && "123456".equals(password)) {
-//            System.out.println("登录之后重定向==============");
-//            response.addCookie(new Cookie("token", userName));
-////            session.setAttribute("loginUser", userName);
-//            return "redirect:/main.html";
-//        } else {
-//            map.put("message", "用户名或密码错误");
-//            return "login";
-//        }
     }
     @PostMapping(value = "/register")
     public Result Register(@RequestBody UserRegister userRegister) {
         loginService.registerUser(userRegister);
         return ResultUtil.success(null);
     }
-//    public String Login(@RequestParam("userName") String userName, @RequestParam("password") String password) {
-//        if (!StringUtils.isEmpty(userName) && "123456".equals(password)) {
-////            return "redirect:/main.html";
-//            return "ok";
-//        } else {
-//            return "login";
-//        }
-//    }
+
+    @GetMapping(value = "/token")
+    public Result Token(HttpServletRequest request) {
+        String token1 = request.getHeader("token");
+        System.out.println("token:====" + token1);
+        return ResultUtil.success();
+    }
 
 }

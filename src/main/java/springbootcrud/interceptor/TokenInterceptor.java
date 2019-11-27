@@ -20,15 +20,16 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
                              Object handler) throws Exception {
         // 地址过滤
         String uri = request.getRequestURI() ;
-        if (uri.contains("/login")){
+        if (uri.contains("/login") || uri.contains("/register")){
             return true ;
         }
         // Token 验证
         String token = request.getHeader(jwtConfig.getHeader());
+        System.out.println("token===="+token);
         if(StringUtils.isEmpty(token)){
             token = request.getParameter(jwtConfig.getHeader());
         }
-        if(StringUtils.isEmpty(token)){
+        if(StringUtils.isEmpty(token) || !token.startsWith(JwtConfig.TOKEN_PREFIX)){
             throw new Exception(jwtConfig.getHeader()+ "不能为空");
         }
         Claims claims = jwtConfig.getTokenClaim(token);
