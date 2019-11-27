@@ -10,8 +10,8 @@ public class JwtTokenUtil {
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    private static final String SECRET = "jwtsecretdemo";
-    private static final String ISS = "echisan";
+    private static final String SECRET = "rickyjwtsecret";
+    private static final String ISS = "huang";
 
     // 过期时间是3600秒，既是1个小时
     private static final long EXPIRATION = 3600L;
@@ -20,20 +20,15 @@ public class JwtTokenUtil {
     private static final long EXPIRATION_REMEMBER = 604800L;
 
     // 创建token
-    public static String createToken(String username, boolean isRememberMe) {
+    public static String createToken(String info, boolean isRememberMe) {
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .setIssuer(ISS)
-                .setSubject(username)
+                .setSubject(info)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
                 .compact();
-    }
-
-    // 从token中获取用户名
-    public static String getUsername(String token){
-        return getTokenBody(token).getSubject();
     }
 
     // 是否已过期
@@ -41,7 +36,7 @@ public class JwtTokenUtil {
         return getTokenBody(token).getExpiration().before(new Date());
     }
 
-    private static Claims getTokenBody(String token){
+    public static Claims getTokenBody(String token){
         return Jwts.parser()
                 .setSigningKey(SECRET)
                 .parseClaimsJws(token)

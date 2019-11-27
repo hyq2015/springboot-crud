@@ -12,9 +12,6 @@ import javax.annotation.Resource;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    @Resource
-    private TokenInterceptor tokenInterceptor ;
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")

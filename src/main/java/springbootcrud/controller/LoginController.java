@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 import springbootcrud.bean.User;
+import springbootcrud.common.JwtTokenUtil;
 import springbootcrud.common.Result;
 import springbootcrud.common.ResultUtil;
 import springbootcrud.config.JwtConfig;
@@ -44,7 +45,7 @@ public class LoginController {
             Map<String,Object> map = new HashMap<>();
             map.put("userName", loginUser.getUserName());
             map.put("email", loginUser.getEmail());
-            String token = jwtConfig.getToken(loginUser.getUserName()+loginUser.getEmail()) ;
+            String token = JwtTokenUtil.createToken("id=" + loginUser.getId(), false) ;
             map.put("token", token);
             return ResultUtil.success(map);
         } else {
