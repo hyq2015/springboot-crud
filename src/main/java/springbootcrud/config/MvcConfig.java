@@ -25,8 +25,8 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
                 // springboot已经做好了静态资源映射 无需配置静态资源exclude
-                registry.addInterceptor(new LoginHandlerInterceptor()).addPathPatterns("/**")
-                        .excludePathPatterns("/index.html", "/", "/user/login", "/swagger-ui.html", "/main.html");
+//                registry.addInterceptor(new LoginHandlerInterceptor()).addPathPatterns("/**")
+//                        .excludePathPatterns("/index.html", "/", "/user/login", "/swagger-ui.html", "/main.html", "/users");
             }
         };
         return adapter;

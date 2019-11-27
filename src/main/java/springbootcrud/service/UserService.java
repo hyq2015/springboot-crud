@@ -19,7 +19,7 @@ public class UserService {
      * 将方法的运行结果缓存起来，以后要是有相同的数据，直接从缓存中取出，不用再调用方法
      * @return {List} List<User>
      */
-    @Cacheable(cacheNames = {"user"}, key = "")
+     @Cacheable(cacheNames = {"user"}, key = "")
     public List<User> getUsers() {
         return userMapper.getAllUser();
     }
