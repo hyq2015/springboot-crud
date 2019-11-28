@@ -1,22 +1,17 @@
 package springbootcrud.controller;
 
-import com.sun.deploy.net.HttpResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.util.StringUtils;
-import springbootcrud.bean.User;
 import springbootcrud.common.JwtTokenUtil;
 import springbootcrud.common.Result;
 import springbootcrud.common.ResultUtil;
-import springbootcrud.config.JwtConfig;
+import springbootcrud.common.TokenException;
 import springbootcrud.dto.UserRegister;
 import springbootcrud.service.LoginService;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,9 +23,6 @@ public class LoginController {
     @Autowired
     LoginService loginService;
 
-    @Autowired
-    JwtConfig jwtConfig;
-
     @ApiOperation(value = "",httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userName", value = "用户名", dataType = "string"),
@@ -39,7 +31,7 @@ public class LoginController {
     @PostMapping(value = "/login")
     public Result Login(@RequestBody UserRegister user,
                         HttpSession session,
-                        HttpServletResponse response) {
+                        HttpServletResponse response) throws TokenException {
         UserRegister loginUser = loginService.login(user);
         if (loginUser != null) {
             Map<String,Object> map = new HashMap<>();

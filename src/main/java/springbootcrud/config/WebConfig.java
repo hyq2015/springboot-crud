@@ -4,11 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import springbootcrud.interceptor.SessionInterceptor;
 import springbootcrud.interceptor.TokenInterceptor;
-
-import javax.annotation.Resource;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -23,6 +19,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/**")
+        .excludePathPatterns(
+                "/webjars/**",
+                "/swagger-ui.html/**",
+                "/swagger-resources/**",
+                "/v2/**",
+                "/**/favicon.ico",
+                "/login",
+                "/register"
+        );
     }
 }

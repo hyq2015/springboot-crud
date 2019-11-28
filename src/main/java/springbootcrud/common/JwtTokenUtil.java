@@ -1,6 +1,7 @@
 package springbootcrud.common;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -14,7 +15,8 @@ public class JwtTokenUtil {
     private static final String ISS = "huang";
 
     // 过期时间是3600秒，既是1个小时
-    private static final long EXPIRATION = 3600L;
+//    private static final long EXPIRATION = 3600L;
+    private static final long EXPIRATION = 10L;
 
     // 选择了记住我之后的过期时间为7天
     private static final long EXPIRATION_REMEMBER = 604800L;
@@ -36,7 +38,7 @@ public class JwtTokenUtil {
         return getTokenBody(token).getExpiration().before(new Date());
     }
 
-    public static Claims getTokenBody(String token){
+    public static Claims getTokenBody(String token) throws ExpiredJwtException{
         return Jwts.parser()
                 .setSigningKey(SECRET)
                 .parseClaimsJws(token)
