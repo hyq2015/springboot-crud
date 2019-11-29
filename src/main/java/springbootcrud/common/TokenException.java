@@ -1,6 +1,6 @@
 package springbootcrud.common;
 
-public class TokenException extends Exception {
+public class TokenException extends RuntimeException {
     private Integer code;
 
     public TokenException(Integer code, String message) {
