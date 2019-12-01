@@ -1,27 +1,13 @@
 package springbootcrud.dto;
 
-public class UserRegister {
-    private String email;
+import javax.validation.constraints.NotBlank;
+
+public class UserRegister extends UserShow {
+    @NotBlank(message = "请输入密码")
     private String password;
-    private String userName;
+
+    @NotBlank(message = "请输入验证码")
     private String smsCode;
-    private Integer id;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getPassword() {
         return password;
@@ -29,14 +15,6 @@ public class UserRegister {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getSmsCode() {

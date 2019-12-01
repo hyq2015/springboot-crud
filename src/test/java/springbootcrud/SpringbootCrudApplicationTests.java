@@ -1,6 +1,7 @@
 package springbootcrud;
 
 import org.junit.jupiter.api.Test;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.SimpleMailMessage;
@@ -40,6 +41,10 @@ class SpringbootCrudApplicationTests {
 
         mailSender.send(mimeMessage);
 
+    }
+    @Test
+    void testTime() {
+        System.out.println(System.currentTimeMillis());
     }
 
 }

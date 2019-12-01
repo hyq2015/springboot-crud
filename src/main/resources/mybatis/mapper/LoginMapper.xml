@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="springbootcrud.dao.LoginMapper">
+    <select id="login" resultType="springbootcrud.dto.UserRegister">
+      SELECT * FROM user WHERE u_user_name=#{userName} AND u_password=#{password}
+    </select>
+    <insert id="registerUser">
+        INSERT INTO user(u_user_name,u_email,u_password,u_sms_code) VALUES (#{userName},#{email},#{password},#{smsCode})
+    </insert>
+    <insert id="sendVerifyCode">
+        REPLACE INTO email(e_email,e_code,e_create_time) VALUES (#{email},#{code},#{createTime})
+    </insert>
+    <resultMap type="springbootcrud.dto.UserRegister" id="validateUserEmail">
+        <id property="id" column="u_id"/>
+        <result property="title" column="a_title"/>
+        <result property="userName" column="u_user_name"/>
+        <result property="email" column="u_email"/>
+    </resultMap>
+    <select id="validateEmail" resultMap="validateUserEmail">
+      SELECT * FROM user WHERE u_email=#{email}
+    </select>
+    <resultMap type="springbootcrud.dto.UserEmail" id="getSpecifiedEmailList">
+        <result property="createTime" column="e_create_time"/>
+        <result property="code" column="e_code"/>
+        <result property="email" column="e_email"/>
+    </resultMap>
+    <select id="getSpecifiedEmail" resultMap="getSpecifiedEmailList">
+      SELECT * FROM email WHERE e_email=#{email}
+    </select>
+</mapper>

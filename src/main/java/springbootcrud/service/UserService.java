@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class UserService {
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     /**
      * 将方法的运行结果缓存起来，以后要是有相同的数据，直接从缓存中取出，不用再调用方法

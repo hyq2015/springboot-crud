@@ -27,7 +27,10 @@ public class WebConfig implements WebMvcConfigurer {
                 "/v2/**",
                 "/**/favicon.ico",
                 "/login",
-                "/register"
+                "/register",
+                "/getArticleById",
+                "/validate/email",
+                "/users"
         );
     }
 }
