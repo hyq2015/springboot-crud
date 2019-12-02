@@ -52,7 +52,25 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             throw new BindResultException(bindingResult);
         }
-        loginService.registerUser(userRegister);
+        UserEmail uEmail = new UserEmail();
+        uEmail.setEmail(userRegister.getEmail());
+        Boolean flag = loginService.isEmailRegistered(uEmail);
+        if (!flag) {
+            List<UserEmail> list = loginService.getSpecifiedEmail(uEmail);
+            if (list.size() == 0) {
+                // 没有验证码发送记录
+                return ResultUtil.error(0, "无效的验证码");
+            } else if(loginService.isSmsCodeExpired(list.get(0).getCreateTime())) {
+                return ResultUtil.error(0, "验证码已过期");
+            } else if(!list.get(0).getCode().equals(userRegister.getSmsCode())) {
+                return ResultUtil.error(0, "验证码不匹配");
+            }
+            else {
+                loginService.registerUser(userRegister);
+            }
+        } else {
+            return ResultUtil.error(0, "此邮箱已经注册");
+        }
         return ResultUtil.success(null);
     }
 
@@ -67,20 +85,9 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             throw new BindResultException(bindingResult);
         }
-        List<UserRegister> user = loginService.validateEmail(userEmail);
-        if (user.size() == 0) {
-            List<UserEmail> listEmail = loginService.getSpecifiedEmail(userEmail);
-            if (listEmail.size() == 0) {
-                loginService.sendVerifyCode(userEmail);
-            } else {
-                Long t = System.currentTimeMillis();
-                int expiredMin = 1;
-                // 如果验证码过期了，重新发送验证码，并且更新email表中的记录
-                if ((t - listEmail.get(0).getCreateTime()) >= (expiredMin * 60 * 1000)) {
-                    loginService.sendVerifyCode(userEmail);
-                }
-            }
-
+        Boolean flag = loginService.isEmailRegistered(userEmail);
+        if (!flag) {
+            loginService.checkIfSendSmsCode(userEmail);
         } else {
             return ResultUtil.error(0, "此邮箱已经注册");
         }

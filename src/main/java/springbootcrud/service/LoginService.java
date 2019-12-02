@@ -25,10 +25,6 @@ public class LoginService {
     @Autowired
     private RedisTemplate<Object, Object> redisTemplate;
 
-    public void registerUser(UserRegister userRegister) {
-        loginMapper.registerUser(userRegister);
-    }
-
     public UserRegister login(UserRegister user) {
         return loginMapper.login(user);
     }
@@ -47,17 +43,42 @@ public class LoginService {
         mailSender.send(simpleMailMessage);
     }
 
-    public List<UserRegister> validateEmail(UserEmail userEmail) {
-        List<UserRegister> userRegisterList = (List<UserRegister>)redisTemplate.opsForValue().get("userRegisterList");
+    // 用户注册
+    public void registerUser(UserRegister userRegister) {
+        loginMapper.registerUser(userRegister);
+    }
+
+    // 验证此邮箱是否已经注册过, true为注册过，false为未注册
+    public Boolean isEmailRegistered(UserEmail userEmail) {
+        List<UserRegister> userRegisterList = (List<UserRegister>)redisTemplate.opsForValue().get(userEmail.getEmail());
         if (userRegisterList == null) {
             userRegisterList = loginMapper.validateEmail(userEmail);
             // 把查询出来的数据放入Redis
-            redisTemplate.opsForValue().set("userRegisterList", userRegisterList);
+            redisTemplate.opsForValue().set(userEmail.getEmail(), userRegisterList);
         }
-        return userRegisterList;
+        return userRegisterList.size() > 0;
     }
 
+    // 验证是否已经给此邮箱发送过验证码
     public List<UserEmail> getSpecifiedEmail(UserEmail userEmail) {
         return loginMapper.getSpecifiedEmail(userEmail);
+    }
+    public void checkIfSendSmsCode(UserEmail userEmail) {
+        List<UserEmail> list = getSpecifiedEmail(userEmail);
+        if (list.size() == 0) {
+            sendVerifyCode(userEmail);
+        } else {
+            if (isSmsCodeExpired(list.get(0).getCreateTime())) {
+                sendVerifyCode(userEmail);
+            }
+        }
+    }
+
+    // 验证是否过期
+    public Boolean isSmsCodeExpired(Long createTime) {
+        Long t = System.currentTimeMillis();
+        int expiredMin = 1;
+        // true：过期  false：有效
+        return (t - createTime) >= (expiredMin * 60 * 1000);
     }
 }

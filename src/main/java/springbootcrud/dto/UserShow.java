@@ -2,8 +2,9 @@ package springbootcrud.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
-public class UserShow {
+public class UserShow implements Serializable {
     @NotBlank(message = "请输入邮箱")
     @Email(message = "邮箱格式错误")
     private String email;
