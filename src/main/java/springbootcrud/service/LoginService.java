@@ -27,6 +27,9 @@ public class LoginService {
     @Autowired
     private RedisTemplate<Object, Object> redisTemplate;
 
+    @Autowired
+    private RedisTemplate<Object, UserRegister> userRegisterRedisTemplate;
+
     public UserRegister login(UserRegister user) {
         UserRegister redisUser = (UserRegister)redisTemplate.opsForValue().get(user.getEmail());
         if (redisUser != null) {
@@ -59,13 +62,16 @@ public class LoginService {
 
     // 验证此邮箱是否已经注册过, true为注册过，false为未注册
     public Boolean isEmailRegistered(UserEmail userEmail) {
-        List<UserRegister> userRegisterList = (List<UserRegister>)redisTemplate.opsForValue().get(userEmail.getEmail());
-        if (userRegisterList == null || userRegisterList.size() == 0) {
-            userRegisterList = loginMapper.validateEmail(userEmail);
-            // 把查询出来的数据放入Redis
-            redisTemplate.opsForValue().set(userEmail.getEmail(), userRegisterList);
+        UserRegister userRegister = (UserRegister)userRegisterRedisTemplate.opsForValue().get(userEmail.getEmail());
+        if (userRegister == null) {
+            List<UserRegister> list = loginMapper.validateEmail(userEmail);
+            if (list.size() > 0) {
+                userRegister = list.get(0);
+                // 把查询出来的数据放入Redis
+                userRegisterRedisTemplate.opsForValue().set(userEmail.getEmail(), userRegister);
+            }
         }
-        return userRegisterList.size() > 0;
+        return userRegister != null;
     }
 
     // 验证是否已经给此邮箱发送过验证码
