@@ -18,7 +18,7 @@
         <result property="userName" column="u_user_name"/>
         <result property="email" column="u_email"/>
     </resultMap>
-    <select id="isEmailRegistered" resultMap="validateUserEmail">
+    <select id="validateEmail" resultMap="validateUserEmail">
       SELECT * FROM user WHERE u_email=#{email}
     </select>
     <resultMap type="springbootcrud.dto.UserEmail" id="getSpecifiedEmailList">

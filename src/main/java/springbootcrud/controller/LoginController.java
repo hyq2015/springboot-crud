@@ -32,9 +32,7 @@ public class LoginController {
             @ApiImplicitParam(name = "password", value = "密码", dataType = "string")
     })
     @PostMapping(value = "/login")
-    public Result Login(@RequestBody UserRegister user,
-                        HttpSession session,
-                        HttpServletResponse response) throws TokenException {
+    public Result Login(@RequestBody UserRegister user) throws TokenException {
         UserRegister loginUser = loginService.login(user);
         if (loginUser != null) {
             Map<String,Object> map = new HashMap<>();
@@ -56,22 +54,14 @@ public class LoginController {
         uEmail.setEmail(userRegister.getEmail());
         Boolean flag = loginService.isEmailRegistered(uEmail);
         if (!flag) {
-            List<UserEmail> list = loginService.getSpecifiedEmail(uEmail);
-            if (list.size() == 0) {
-                // 没有验证码发送记录
-                return ResultUtil.error(0, "无效的验证码");
-            } else if(loginService.isSmsCodeExpired(list.get(0).getCreateTime())) {
-                return ResultUtil.error(0, "验证码已过期");
-            } else if(!list.get(0).getCode().equals(userRegister.getSmsCode())) {
-                return ResultUtil.error(0, "验证码不匹配");
+            HttpResult httpResult = loginService.shouldUserRegister(uEmail,userRegister);
+            if (httpResult.getType().equals("success")) {
+                return ResultUtil.success(null, httpResult.getStatus().getMessage());
             }
-            else {
-                loginService.registerUser(userRegister);
-            }
+            return ResultUtil.error(httpResult.getStatus().getCode(), httpResult.getStatus().getMessage());
         } else {
             return ResultUtil.error(0, "此邮箱已经注册");
         }
-        return ResultUtil.success(null);
     }
 
     @GetMapping(value = "/token")

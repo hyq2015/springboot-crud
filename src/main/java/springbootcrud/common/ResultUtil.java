@@ -8,6 +8,13 @@ public class ResultUtil {
         result.setData(object);
         return result;
     }
+    public static Result success(Object object, String msg) {
+        Result result = new Result();
+        result.setCode(0);
+        result.setMessage(msg);
+        result.setData(object);
+        return result;
+    }
     public static Result success() {
         return success(null);
     }

@@ -1,18 +1,20 @@
 package springbootcrud.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
+import springbootcrud.common.HttpResult;
+import springbootcrud.common.HttpStatus;
 import springbootcrud.common.RandomCode;
 import springbootcrud.dao.LoginMapper;
 import springbootcrud.dto.UserEmail;
 import springbootcrud.dto.UserRegister;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LoginService {
@@ -26,11 +28,18 @@ public class LoginService {
     private RedisTemplate<Object, Object> redisTemplate;
 
     public UserRegister login(UserRegister user) {
-        return loginMapper.login(user);
+        UserRegister redisUser = (UserRegister)redisTemplate.opsForValue().get(user.getEmail());
+        if (redisUser != null) {
+            return redisUser;
+        } else {
+            redisUser = loginMapper.login(user);
+            redisTemplate.opsForValue().set(user.getEmail(),redisUser);
+            return redisUser;
+        }
     }
 
-
-    public void sendVerifyCode(UserEmail userEmail) {
+    // 给邮箱发送验证码
+    private void sendVerifyCode(UserEmail userEmail) {
         String code = RandomCode.getCode(4);
         userEmail.setCode(code);
         userEmail.setCreateTime(System.currentTimeMillis());
@@ -51,7 +60,7 @@ public class LoginService {
     // 验证此邮箱是否已经注册过, true为注册过，false为未注册
     public Boolean isEmailRegistered(UserEmail userEmail) {
         List<UserRegister> userRegisterList = (List<UserRegister>)redisTemplate.opsForValue().get(userEmail.getEmail());
-        if (userRegisterList == null) {
+        if (userRegisterList == null || userRegisterList.size() == 0) {
             userRegisterList = loginMapper.validateEmail(userEmail);
             // 把查询出来的数据放入Redis
             redisTemplate.opsForValue().set(userEmail.getEmail(), userRegisterList);
@@ -72,6 +81,28 @@ public class LoginService {
                 sendVerifyCode(userEmail);
             }
         }
+    }
+    public HttpResult shouldUserRegister(UserEmail userEmail, UserRegister userRegister) {
+        List<UserEmail> list = getSpecifiedEmail(userEmail);
+        HttpResult httpResult = new HttpResult();
+        if (list.size() == 0) {
+            httpResult.setType("error");
+            httpResult.setStatus(HttpStatus.SMS_CODE_INVALID);
+        } else if (isSmsCodeExpired(list.get(0).getCreateTime()) && list.get(0).getCode().equals(userRegister.getSmsCode())) {
+            httpResult.setType("error");
+            httpResult.setStatus(HttpStatus.SMS_CODE_EXPIRED);
+        }else if (isSmsCodeExpired(list.get(0).getCreateTime()) && !list.get(0).getCode().equals(userRegister.getSmsCode())) {
+            httpResult.setType("error");
+            httpResult.setStatus(HttpStatus.SMS_CODE_INVALID);
+        } else if (!isSmsCodeExpired(list.get(0).getCreateTime()) && !list.get(0).getCode().equals(userRegister.getSmsCode())) {
+            httpResult.setType("error");
+            httpResult.setStatus(HttpStatus.SMS_CODE_MISMATCH);
+        } else {
+            registerUser(userRegister);
+            httpResult.setType("success");
+            httpResult.setStatus(HttpStatus.REGISTER_SUCCESS);
+        }
+        return httpResult;
     }
 
     // 验证是否过期
