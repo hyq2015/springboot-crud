@@ -12,9 +12,7 @@ import springbootcrud.dao.LoginMapper;
 import springbootcrud.dto.UserEmail;
 import springbootcrud.dto.UserRegister;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class LoginService {
@@ -56,7 +54,7 @@ public class LoginService {
     }
 
     // 用户注册
-    public void registerUser(UserRegister userRegister) {
+    private void registerUser(UserRegister userRegister) {
         loginMapper.registerUser(userRegister);
     }
 
@@ -75,7 +73,7 @@ public class LoginService {
     }
 
     // 验证是否已经给此邮箱发送过验证码
-    public List<UserEmail> getSpecifiedEmail(UserEmail userEmail) {
+    private List<UserEmail> getSpecifiedEmail(UserEmail userEmail) {
         return loginMapper.getSpecifiedEmail(userEmail);
     }
     public void checkIfSendSmsCode(UserEmail userEmail) {
@@ -112,7 +110,7 @@ public class LoginService {
     }
 
     // 验证是否过期
-    public Boolean isSmsCodeExpired(Long createTime) {
+    private Boolean isSmsCodeExpired(Long createTime) {
         Long t = System.currentTimeMillis();
         int expiredMin = 1;
         // true：过期  false：有效

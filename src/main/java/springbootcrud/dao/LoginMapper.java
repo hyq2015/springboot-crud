@@ -1,14 +1,9 @@
 package springbootcrud.dao;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import springbootcrud.dto.UserEmail;
 import springbootcrud.dto.UserRegister;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository

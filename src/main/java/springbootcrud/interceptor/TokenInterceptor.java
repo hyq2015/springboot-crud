@@ -1,7 +1,5 @@
 package springbootcrud.interceptor;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -19,13 +17,6 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws TokenException {
-        // 地址过滤
-//        String uri = request.getRequestURI();
-//        System.out.println(uri);
-//        if (uri.contains("/login") || uri.contains("/register")){
-//            return true ;
-//        }
-        // Token 验证
 
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
         if(StringUtils.isEmpty(token)){
@@ -46,9 +37,6 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 
         }
 
-        //设置 identityId 用户身份ID
-//        request.setAttribute("identityId", claims.getSubject());
-//        System.out.println("current user ====== " + claims.getSubject());
         return true;
     }
 }
